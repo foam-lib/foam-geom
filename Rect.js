@@ -53,6 +53,15 @@ export function createFromSize2(width,height){
 }
 
 /**
+ * Creates a rectangle with a specific size.
+ * @param size
+ * @returns {*[]}
+ */
+export function createFromSize1(size){
+    return [0,0,size,size];
+}
+
+/**
  * Creates a rectangle with a specific origin.
  * @param pos
  */
@@ -123,6 +132,7 @@ export function set4(rect,x,y,w,h){
     rect[3] = h;
     return rect;
 }
+
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 // ORIGIN
@@ -411,6 +421,16 @@ export function clamped(recta,rectb){
  */
 export function clamped4(rect,x,y,width,height){
     return clamp4(copy(rect),x,y,width,height);
+}
+
+export function clampPoint(rect,point){
+    point[0] = Math.max(rect[0],Math.min(point[0],rect[0] + rect[2]));
+    point[1] = Math.max(rect[1],Math.min(point[1],rect[1] + rect[3]));
+    return point;
+}
+
+export function clampedPoint(rect,point){
+    return clampPoint(rect,point.slice(0));
 }
 
 /**
@@ -747,6 +767,65 @@ export function getPoints(rect,out){
 }
 
 /*--------------------------------------------------------------------------------------------------------------------*/
+// INCLUDE
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+export function includePoint(rect,point){
+    return includePoint2(rect,point[0],point[1]);
+}
+
+export function includePoint2(rect,px,py){
+    let tlx = rect[0];
+    let tly = rect[1];
+    let brx = tlx + rect[2];
+    let bry = tly + rect[3];
+
+    tlx = Math.min(tlx,px);
+    tly = Math.min(tly,py);
+    brx = Math.max(brx,px);
+    bry = Math.max(bry,py);
+
+    rect[0] = tlx;
+    rect[1] = tly;
+    rect[2] = brx - tlx;
+    rect[3] = bry - tly;
+
+    return rect;
+}
+
+export function includedPoint(rect,point){
+    return includePoint(copy(rect),point);
+}
+
+export function includedPoint2(rect,px,py){
+    return includePoint2(copy(rect),px,py);
+}
+
+export function includePoints(rect,points){
+    for(let i = 0; i < points.length; i+=2){
+        includePoint2(rect,points[i],points[i+1]);
+    }
+}
+
+export function includeExtends(rect,min,max){
+    return includeExtends2(rect,min[0],min[1],max[0],max[1]);
+}
+
+export function includeExtends2(rect,minx,miny,maxx,maxy){
+    includePoint2(rect,minx,miny);
+    includePoint2(rect,maxx,maxy);
+    return rect;
+}
+
+export function includedExtends(rect,min,max){
+    return includeExtends(copy(rect),min,max);
+}
+
+export function includedExtends2(rect,min,max){
+    return includeExtends2(copy(rect),min,max);
+}
+
+/*--------------------------------------------------------------------------------------------------------------------*/
 // EDGES
 /*--------------------------------------------------------------------------------------------------------------------*/
 
@@ -754,11 +833,6 @@ export function getPoints(rect,out){
 export function intersection(recta,rectb){
 
 }
-
-export function edges(rect,out){
-
-}
-
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 // EQUALITY CHECKS
@@ -787,31 +861,6 @@ export function isZero(rect){
            rect[1] === 0 &&
            rect[2] === 0 &&
            rect[3] === 0;
-}
-
-
-export function includePoint(rect,point){
-    const px = point[0];
-    const py = point[1];
-    const rx = rect[0];
-    const ry = rect[1];
-    const rw = rect[2];
-    const rh = rect[3];
-    const extx = rx + rect[2];
-    const exty = ry + rect[3];
-    if(px < rx){
-        rect[0] = px;
-        rect[2] = rx - px + rw;
-    } else if(px > (rx + rw)){
-
-    }
-    if(py < ry){
-        rect[1] = py;
-        rect[3] = ry - py + rh;
-    } else {
-
-    }
-    return rect;
 }
 
 export function union(recta,rectb){
