@@ -525,7 +525,7 @@ export function scaleSize(rect,s){
  * @param s
  */
 export function scaleSize1(rect,s){
-    return scaleSize2(rect,s);
+    return scaleSize2(rect,s,s);
 }
 
 /**
