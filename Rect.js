@@ -761,8 +761,8 @@ export function getPoints(rect,out){
     out = out || [];
     out[0] = getTL(rect,out[0]);
     out[1] = getTR(rect,out[1]);
-    out[2] = getBL(rect,out[2]);
-    out[3] = getBR(rect,out[3]);
+    out[2] = getBR(rect,out[2]);
+    out[3] = getBL(rect,out[3]);
     return out;
 }
 
